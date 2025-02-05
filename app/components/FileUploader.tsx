@@ -95,28 +95,36 @@ export default function FileUploader() {
           </div>
 
           {/* Upload Zone */}
-          <div className="w-full max-w-3xl mx-auto">
+          <div className="w-full max-w-3xl mx-auto relative">
             <div
               {...getRootProps()}
               className={clsx(
-                "border-2 border-dashed rounded-lg p-12 text-center transition-all cursor-pointer",
+                "border-2 border-dashed rounded-lg p-12 text-center transition-all",
                 isDragActive
                   ? "border-blue-500 bg-blue-50"
                   : "border-gray-300 hover:border-gray-400",
-                uploading && "pointer-events-none opacity-50"
+                uploading ? "pointer-events-none opacity-50" : "cursor-pointer"
               )}
             >
-              <input {...getInputProps()} />
+              <input {...getInputProps()} disabled={uploading} />
               <div className="flex flex-col items-center gap-4">
-                <Upload
-                  className={clsx(
-                    "w-12 h-12 transition-colors",
-                    isDragActive ? "text-blue-500" : "text-gray-400"
-                  )}
-                />
+                {uploading ? (
+                  <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+                ) : (
+                  <Upload
+                    className={clsx(
+                      "w-12 h-12 transition-colors",
+                      isDragActive ? "text-blue-500" : "text-gray-400"
+                    )}
+                  />
+                )}
                 {isDragActive ? (
                   <p className="text-lg font-medium text-blue-500">
                     Drop your ZIP file here
+                  </p>
+                ) : uploading ? (
+                  <p className="text-lg font-medium text-blue-500">
+                    Processing your ZIP file...
                   </p>
                 ) : (
                   <p className="text-lg font-medium text-gray-500">
@@ -125,15 +133,14 @@ export default function FileUploader() {
                 )}
               </div>
             </div>
+            
+            {/* Upload Status */}
+            {uploading && (
+              <div className="absolute left-0 right-0 -bottom-12 flex items-center justify-center gap-2 text-blue-600">
+                <span className="text-sm">Please wait while we extract your files...</span>
+              </div>
+            )}
           </div>
-
-          {/* Upload Status */}
-          {uploading && (
-            <div className="flex items-center justify-center gap-2 text-blue-600 animate-in fade-in">
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Uploading and extracting files...</span>
-            </div>
-          )}
 
           {/* File List */}
           {files.length > 0 && (

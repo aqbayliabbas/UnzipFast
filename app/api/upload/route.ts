@@ -4,6 +4,12 @@ import { join } from 'path';
 import * as fs from 'fs';
 import AdmZip from 'adm-zip';
 
+interface FileItem {
+  name: string;
+  path: string;
+  size: number;
+}
+
 export async function POST(request: Request) {
   try {
     // Create directories if they don't exist
@@ -36,7 +42,7 @@ export async function POST(request: Request) {
     zip.extractAllTo(extractPath, true);
 
     // Get list of files
-    const files = [];
+    const files: FileItem[] = [];
     const readDir = (dir: string) => {
       const items = fs.readdirSync(dir);
       for (const item of items) {
